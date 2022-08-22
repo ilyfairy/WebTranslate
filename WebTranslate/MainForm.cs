@@ -22,7 +22,7 @@ public partial class MainForm : Form
     private string LastInputText = ""; //最后输入文本
 
     private readonly string configFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"config.yaml"); //配置文件名
-    private WindowConfig Config; //配置
+    private WindowConfig Config; //窗口配置
 
     private bool isExit = false; //是否开始退出
     private bool isHide; //启动时是否隐藏
@@ -101,38 +101,35 @@ public partial class MainForm : Form
 
     private void Web_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.KeyCode is Keys.ControlKey or Keys.ShiftKey or Keys.Alt or Keys.LWin or Keys.F12)
+        switch (e.KeyCode)
         {
-            lastModifier[2] = lastModifier[1];
-            lastModifier[1] = lastModifier[0];
-            lastModifier[0] = e.KeyCode;
+            case Keys.W:
+                if(ModifierKeys == Keys.Control) Hide();
+                break;
+            case Keys.Tab:
+                if((ModifierKeys & Keys.Control) == Keys.Control)
+                {
+                    if((ModifierKeys & Keys.Shift) == Keys.Shift)
+                    {
+                        Last();
+                    }
+                    else
+                    {
+                        Next();
+                    }
+                }
+                break;
+            case Keys.F12:
+                if (ModifierKeys == Keys.Control)
+                {
+                    MessageBox.Show("设置");
+                    e.Handled = true;
+                }
+                break;
+            default:
+                return;
         }
-        if (e.KeyCode == Keys.W)
-        {
-            if (lastModifier[0] == Keys.ControlKey)
-            {
-                Hide();
-            }
-        }
-        if (e.KeyCode == Keys.Tab)
-        {
-            if (lastModifier[0] == Keys.ControlKey)
-            {
-                Next();
-            }
-            else if (lastModifier[1] == Keys.ControlKey && lastModifier[0] == Keys.Shift)
-            {
-                Last();
-            }
-        }
-        if (e.KeyCode == Keys.F12)
-        {
-            if (lastModifier[1] == Keys.ControlKey)
-            {
-                MessageBox.Show("设置");
-                e.Handled = true;
-            }
-        }
+        e.Handled = true;
     }
 
     private void MainForm_Deactivate(object? sender, EventArgs e)
@@ -216,15 +213,20 @@ public partial class MainForm : Form
     }
     protected override void OnClosing(CancelEventArgs e)
     {
-        if (isExit || ModifierKeys == Keys.Control) //退出
+        if (isExit || ModifierKeys == Keys.Control)
         {
+            //退出
             Config.Width = Width;
             Config.Height = Height;
             SaveConfig();
             return;
         }
-        Hide();
-        e.Cancel = true;
+        else
+        {
+            //隐藏
+            Hide();
+            e.Cancel = true;
+        }
     }
     #endregion
 

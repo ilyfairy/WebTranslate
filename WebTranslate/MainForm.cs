@@ -17,7 +17,6 @@ public partial class MainForm : Form
     private WebView2 Web => webs[index]; //标签栏
     private int index = 0; //标签栏索引
 
-    private readonly Keys[] lastModifier = new Keys[3]; //最后控制按键
     private readonly HotKeyManager HotKey; //热键管理
     private string LastInputText = ""; //最后输入文本
 
@@ -363,10 +362,6 @@ public partial class MainForm : Form
         webs.Add(web);
         return web;
     }
-
-
-
-
     #endregion
 
 }

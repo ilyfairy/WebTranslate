@@ -17,7 +17,7 @@ public class HotKeyManager
 
     private readonly Dictionary<int, Action> map = new();
 
-    public bool Add(string id, ControlKeys modifyKey, Keys key, Action callback)
+    public bool Add(string id, KeyModifiers modifyKey, Keys key, Action callback)
     {
         int hash = id.GetHashCode();
         bool isReg = RegisterHotKey(Hwnd, hash, modifyKey, key);
@@ -35,9 +35,10 @@ public class HotKeyManager
     public void Remove(string id)
     {
         map.Remove(id.GetHashCode());
+        UnregisterHotKey(Hwnd, id.GetHashCode());
     }
 
-    public void Loop(int id)
+    public void LoopAction(int id)
     {
         if (map.TryGetValue(id, out Action? action))
         {
@@ -54,7 +55,7 @@ public class HotKeyManager
     /// <param name="vk"></param>
     /// <returns></returns>
     [DllImport("user32.dll")]
-    private static extern bool RegisterHotKey(IntPtr hWnd, int id, ControlKeys fsModifiers, Keys vk);
+    private static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
 
     /// <summary>
     /// 注销热键 
@@ -66,7 +67,7 @@ public class HotKeyManager
     private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 }
 
-public enum ControlKeys
+public enum KeyModifiers
 {
     None = 0,
     Alt = 1,

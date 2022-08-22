@@ -26,8 +26,9 @@ public partial class MainForm : Form
     private bool isHide; //启动时是否隐藏
 
     private RegistryKey? registryRun = null; //注册表Run
-    private readonly string registryName = "WinFormTranslate"; //注册表启动项名
     private readonly string startupCmd = $"\"{Application.ExecutablePath}\" -nogui"; //注册表启动项命令
+
+    private readonly SettingForm SettingForm; //设置窗口
 
 
     public MainForm(bool isHide)
@@ -53,7 +54,6 @@ public partial class MainForm : Form
             {
                 Deserializer deser = new();
                 Config = deser.Deserialize<WindowConfig>(File.ReadAllText(configFileName));
-                Config.GlobalHotKey.Modifier = Config.GlobalHotKey.Modifier.Distinct().ToArray(); //去除重复的快捷键
                 if (Config.Width <= 0) Config.Width = Width;
                 if (Config.Height <= 0) Config.Height = Height;
             }
@@ -69,20 +69,22 @@ public partial class MainForm : Form
         Width = Config!.Width;
         Height = Config.Height;
         SaveConfig();
+        SettingForm = new SettingForm(Config);
+        SettingForm.ConfigUpdated += SettingForm_ConfigUpdated;
     }
 
 
 
 
     #region Event
-    private async void Form_Load(object sender, EventArgs e)
+    private async void MainForm_Load(object sender, EventArgs e)
     {
         await NewWeb("https://translate.google.cn/");
         await CreateWebView("https://fanyi.baidu.com/");
         try
         {
             registryRun = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
-            if ((registryRun.GetValue(registryName) as string) == startupCmd)
+            if ((registryRun.GetValue(Constants.RegistryName) as string) == startupCmd)
             {
                 notifyStartup.Checked = true;
             }
@@ -90,13 +92,16 @@ public partial class MainForm : Form
         catch { }
         this.TopMost = Config.TopMost;
         await Task.Delay(500);
-        bool ok = HotKey.Add("hotkey", Config.GlobalHotKey.Modifier.Aggregate((v1, v2) => v1 | v2), Config.GlobalHotKey.Key, HotKeyCallback);
-        if (!ok)
-        {
-            MessageBox.Show("热键注册失败");
-        }
+        RegistryGlobalHotKey();
     }
-
+    private void SettingForm_ConfigUpdated(object? sender, WindowConfig oldConfig)
+    {
+        if(oldConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || oldConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
+        {
+            RegistryGlobalHotKey();
+        }
+        SaveConfig();
+    }
     private void Web_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (e.KeyCode)
@@ -120,8 +125,8 @@ public partial class MainForm : Form
             case Keys.F12:
                 if (ModifierKeys == Keys.Control)
                 {
-                    MessageBox.Show("设置");
-                    e.Handled = true;
+                    SettingForm.Show();
+                    SettingForm.Activate();
                 }
                 break;
             default:
@@ -176,7 +181,7 @@ public partial class MainForm : Form
         Config = new();
         Config.GlobalHotKey = new KeyCombination()
         {
-            Modifier = new ControlKeys[] { ControlKeys.Control, ControlKeys.Shift },
+            Modifier = KeyModifiers.Control | KeyModifiers.Shift,
             Key = Keys.T
         };
         Config.Width = Width;
@@ -195,6 +200,15 @@ public partial class MainForm : Form
             File.WriteAllText(configFileName, ser.Serialize(Config));
         }
         catch { }
+    }
+    private void RegistryGlobalHotKey()
+    {
+        HotKey.Remove(Constants.GlobalHotKey);
+        bool ok = HotKey.Add(Constants.GlobalHotKey, Config.GlobalHotKey.Modifier, Config.GlobalHotKey.Key, HotKeyCallback);
+        if (!ok)
+        {
+            MessageBox.Show("热键注册失败");
+        }
     }
     #endregion
 
@@ -257,11 +271,11 @@ public partial class MainForm : Form
         }
         if (notifyStartup.Checked)
         {
-            registryRun.SetValue(registryName, startupCmd, RegistryValueKind.String);
+            registryRun.SetValue(Constants.RegistryName, startupCmd, RegistryValueKind.String);
         }
         else
         {
-            registryRun.DeleteValue(registryName);
+            registryRun.DeleteValue(Constants.RegistryName);
         }
     }
     #endregion
@@ -271,9 +285,9 @@ public partial class MainForm : Form
     #region GlobalHotKey
     protected override void WndProc(ref Message m)
     {
-        if (m.Msg == 0x312)
+        if (m.Msg == Constants.WM_HOTKEY)
         {
-            HotKey.Loop((int)m.WParam);
+            HotKey.LoopAction((int)m.WParam);
         }
         base.WndProc(ref m);
 

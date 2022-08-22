@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -16,7 +16,8 @@
 	  <RootNamespace>Ilyfairy.Tools.WebTranslate</RootNamespace>
 	  <Title>WebTranslate</Title>
 	  <Authors>ilyfairy</Authors>
-	  <VersionPrefix>1.0.2</VersionPrefix>
+	  <VersionPrefix>1.0.3</VersionPrefix>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

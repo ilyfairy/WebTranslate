@@ -11,5 +11,13 @@ public class WindowConfig
     public bool TopMost { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public WindowConfig Clone()
+    {
+        var clone = (WindowConfig)this.MemberwiseClone();
+        clone.GlobalHotKey = new KeyCombination();
+        clone.GlobalHotKey.Modifier = GlobalHotKey.Modifier;
+        clone.GlobalHotKey.Key = GlobalHotKey.Key;
+        return clone;
+    }
 
 }

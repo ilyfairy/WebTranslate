@@ -13,7 +13,6 @@ namespace Ilyfairy.Tools.WebTranslate
             ApplicationConfiguration.Initialize();
             bool isHide = args.Any(v => string.Equals(v, "-nogui", StringComparison.OrdinalIgnoreCase));
             MainForm mainForm = new(isHide);
-            
             Application.Run(mainForm);
         }
     }

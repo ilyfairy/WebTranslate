@@ -70,6 +70,7 @@ public partial class SettingForm : Form
     {
         isFristInput = true;
         OldConfig = Config.Clone();
+        hotkeyTextBox.Text = OldConfig.GlobalHotKey.ToString();
         TempHotKey.Modifier = Config.GlobalHotKey.Modifier;
         TempHotKey.Key = Config.GlobalHotKey.Key;
     }

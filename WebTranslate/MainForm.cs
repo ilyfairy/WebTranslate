@@ -1,4 +1,3 @@
-using Ilyfairy.Tools.WinFormTranslate;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Win32;
@@ -9,7 +8,7 @@ using System.Reflection;
 using System.Security.Policy;
 using YamlDotNet.Serialization;
 
-namespace Ilyfairy.Tools.WinFormTranslate;
+namespace Ilyfairy.Tools.WebTranslate;
 
 public partial class MainForm : Form
 {

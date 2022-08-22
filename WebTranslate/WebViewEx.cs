@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Ilyfairy.Tools.WinFormTranslate;
+namespace Ilyfairy.Tools.WebTranslate;
 
 public static class WebViewEx
 {

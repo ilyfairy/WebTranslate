@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Markup;
 
-namespace Ilyfairy.Tools.WinFormTranslate;
+namespace Ilyfairy.Tools.WebTranslate;
 
 public class HotKeyManager
 {

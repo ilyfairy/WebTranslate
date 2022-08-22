@@ -1,9 +1,8 @@
-﻿using Ilyfairy.Tools.WinFormTranslate;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ilyfairy.Tools.WinFormTranslate
+namespace Ilyfairy.Tools.WebTranslate
 {
     public class KeyCombination
     {

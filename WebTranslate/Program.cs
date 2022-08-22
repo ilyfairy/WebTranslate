@@ -1,6 +1,6 @@
 using YamlDotNet.Serialization;
 
-namespace Ilyfairy.Tools.WinFormTranslate
+namespace Ilyfairy.Tools.WebTranslate
 {
     internal static class Program
     {

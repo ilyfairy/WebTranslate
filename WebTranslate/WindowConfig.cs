@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ilyfairy.Tools.WinFormTranslate;
+namespace Ilyfairy.Tools.WebTranslate;
 
 public class WindowConfig
 {

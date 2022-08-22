@@ -1,4 +1,4 @@
-﻿namespace Ilyfairy.Tools.WinFormTranslate
+﻿namespace Ilyfairy.Tools.WebTranslate
 {
     partial class MainForm
     {

@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Ilyfairy.Tools.WinFormTranslate
+namespace Ilyfairy.Tools.WebTranslate
 {
     public partial class SettingForm : Form
     {

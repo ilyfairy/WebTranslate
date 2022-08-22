@@ -16,7 +16,7 @@
 	  <RootNamespace>Ilyfairy.Tools.WebTranslate</RootNamespace>
 	  <Title>WebTranslate</Title>
 	  <Authors>ilyfairy</Authors>
-	  <VersionPrefix>1.0.1</VersionPrefix>
+	  <VersionPrefix>1.0.2</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>

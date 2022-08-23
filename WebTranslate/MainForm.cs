@@ -215,17 +215,16 @@ public partial class MainForm : Form
     {
         ShowWindow();
         string text = Clipboard.GetText();
+        await Web.GoogleTranslateFocusInputBox();
+        await Web.BaiduTranslateFocusInputBox();
         if (text == LastInputText || string.IsNullOrWhiteSpace(text)) return;
         LastInputText = text;
         if(Web.Source.Host == Constants.GoogleTranslate.Host)
         {
-            await Web.GoogleTranslateFocusInputBox();
             await Web.GoogleTranslateInput(text);
         }
         else if (Web.Source.Host == Constants.BaiduTranslate.Host)
         {
-
-            await Web.BaiduTranslateFocusInputBox();
             await Web.BaiduTranslateInput(text);
         }
     }

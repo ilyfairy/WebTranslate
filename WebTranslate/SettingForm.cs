@@ -18,6 +18,7 @@ public partial class SettingForm : Form
     public readonly WindowConfig Config;
     private WindowConfig NewConfig;
     public event Func<object,WindowConfig,bool>? ConfigUpdated;
+    public event Action? ConfigWindowClosed;
 
     public SettingForm(WindowConfig config)
     {
@@ -44,7 +45,6 @@ public partial class SettingForm : Form
     {
         hotkeyTextBox.Text = NewConfig.GlobalHotKey.ToString();
     }
-
     private void HotKey_TextBox_Changed(object? sender, KeyEventArgs e)
     {
         NewConfig.GlobalHotKey.Key = Keys.None;
@@ -87,29 +87,29 @@ public partial class SettingForm : Form
         NewConfig.GlobalHotKey.Key = e.KeyCode;
         ShowHotKey();
     }
-
-
     public void ShowWindow()
     {
         Text = "设置";
         NewConfig = Config.Clone();
-        NewConfig.GlobalHotKey.Modifier = Config.GlobalHotKey.Modifier;
-        NewConfig.GlobalHotKey.Key = Config.GlobalHotKey.Key;
+        autoHideCheckBox.Checked = NewConfig.AutoHide;
+        topMostCheckBox.Checked = NewConfig.TopMost;
+        Visible = true;
         ShowHotKey();
         Show();
         Activate();
         saveButton.Focus();
     }
-
     protected override void OnClosing(CancelEventArgs e)
     {
         e.Cancel = true;
+        Visible = false;
         Hide();
+        ConfigWindowClosed?.Invoke();
     }
-
-
     private void Save_Click(object sender, EventArgs e)
     {
+        NewConfig.TopMost = topMostCheckBox.Checked;
+        NewConfig.AutoHide = autoHideCheckBox.Checked;
         bool ok = ConfigUpdated?.Invoke(this, NewConfig) ?? false;
         if (ok)
         {

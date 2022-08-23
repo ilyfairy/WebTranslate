@@ -26,11 +26,10 @@ public partial class MainForm : Form
 
     private readonly SettingForm SettingForm; //设置窗口
 
-
     public MainForm(bool isHide)
     {
         InitializeComponent();
-
+        
         if (isHide)
         {
             this.Opacity = 0;
@@ -67,8 +66,8 @@ public partial class MainForm : Form
         SaveConfig();
         SettingForm = new SettingForm(Config);
         SettingForm.ConfigUpdated += SettingForm_ConfigUpdated;
+        SettingForm.ConfigWindowClosed += SettingForm_ConfigWindowClosed;
     }
-
 
 
 
@@ -89,21 +88,6 @@ public partial class MainForm : Form
         this.TopMost = Config.TopMost;
         await Task.Delay(500);
         RegistryGlobalHotKey();
-    }
-    private bool SettingForm_ConfigUpdated(object sender, WindowConfig newConfig)
-    {
-        bool ok = true;
-        if(newConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || newConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
-        {
-            ok |= RegistryGlobalHotKey(newConfig.GlobalHotKey);
-        }
-        if (ok)
-        {
-            Config.GlobalHotKey.Modifier = newConfig.GlobalHotKey.Modifier;
-            Config.GlobalHotKey.Key = newConfig.GlobalHotKey.Key;
-            SaveConfig();
-        }
-        return ok;
     }
     private async void Web_KeyDown(object? sender, KeyEventArgs e)
     {
@@ -149,6 +133,7 @@ public partial class MainForm : Form
             case Keys.F12:
                 if (ModifierKeys == Keys.Control)
                 {
+                    TopMost = false; //防止设置窗口被覆盖
                     SettingForm.ShowWindow();
                     e.Handled = true;
                 }
@@ -157,12 +142,38 @@ public partial class MainForm : Form
                 return;
         }
     }
+    private bool SettingForm_ConfigUpdated(object sender, WindowConfig newConfig)
+    {
+        bool ok = true;
+        if(newConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || newConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
+        {
+            ok |= RegistryGlobalHotKey(newConfig.GlobalHotKey);
+        }
+        if (ok)
+        {
+            Config.TopMost = newConfig.TopMost;
+            Config.AutoHide = newConfig.AutoHide;
+            Config.GlobalHotKey.Modifier = newConfig.GlobalHotKey.Modifier;
+            Config.GlobalHotKey.Key = newConfig.GlobalHotKey.Key;
+            SaveConfig();
+        }
+        return ok;
+    }
+
+    //当设置关闭时,置顶才会生效
+    private void SettingForm_ConfigWindowClosed()
+    {
+        if (Config.TopMost)
+        {
+            TopMost = Config.TopMost;
+        }
+    }
     private void MainForm_Deactivate(object? sender, EventArgs e)
     {
-        if (Config.AutoHide)
+        //当设置窗口没有显示时,自动隐藏才会生效
+        if (Config.AutoHide && !SettingForm.Visible)
         {
             Hide();
-            
         }
     }
     private void Web_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
@@ -248,6 +259,12 @@ public partial class MainForm : Form
         {
             await Web.BaiduTranslateInput(text);
         }
+
+        Action f = F;
+    }
+    void F()
+    {
+
     }
     #endregion
 

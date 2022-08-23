@@ -32,6 +32,8 @@
             this.hotkeyTextBox = new System.Windows.Forms.TextBox();
             this.versionLabel = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
+            this.autoHideCheckBox = new System.Windows.Forms.CheckBox();
+            this.topMostCheckBox = new System.Windows.Forms.CheckBox();
             hotkeyLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -40,13 +42,13 @@
             hotkeyLabel.AutoSize = true;
             hotkeyLabel.Location = new System.Drawing.Point(12, 19);
             hotkeyLabel.Name = "hotkeyLabel";
-            hotkeyLabel.Size = new System.Drawing.Size(73, 25);
+            hotkeyLabel.Size = new System.Drawing.Size(92, 25);
             hotkeyLabel.TabIndex = 1;
-            hotkeyLabel.Text = "快捷键:";
+            hotkeyLabel.Text = "全局热键:";
             // 
             // hotkeyTextBox
             // 
-            this.hotkeyTextBox.Location = new System.Drawing.Point(88, 16);
+            this.hotkeyTextBox.Location = new System.Drawing.Point(107, 16);
             this.hotkeyTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.hotkeyTextBox.Name = "hotkeyTextBox";
             this.hotkeyTextBox.ReadOnly = true;
@@ -73,11 +75,33 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.Save_Click);
             // 
+            // autoHideCheckBox
+            // 
+            this.autoHideCheckBox.AutoSize = true;
+            this.autoHideCheckBox.Location = new System.Drawing.Point(16, 67);
+            this.autoHideCheckBox.Name = "autoHideCheckBox";
+            this.autoHideCheckBox.Size = new System.Drawing.Size(152, 29);
+            this.autoHideCheckBox.TabIndex = 3;
+            this.autoHideCheckBox.Text = "自动隐藏窗口";
+            this.autoHideCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // topMostCheckBox
+            // 
+            this.topMostCheckBox.AutoSize = true;
+            this.topMostCheckBox.Location = new System.Drawing.Point(16, 107);
+            this.topMostCheckBox.Name = "topMostCheckBox";
+            this.topMostCheckBox.Size = new System.Drawing.Size(114, 29);
+            this.topMostCheckBox.TabIndex = 4;
+            this.topMostCheckBox.Text = "始终置顶";
+            this.topMostCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(678, 444);
+            this.Controls.Add(this.topMostCheckBox);
+            this.Controls.Add(this.autoHideCheckBox);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(hotkeyLabel);
@@ -87,7 +111,7 @@
             this.MinimizeBox = false;
             this.Name = "SettingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Settings";
+            this.Text = "设置";
             this.Load += new System.EventHandler(this.SettingForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -99,5 +123,7 @@
         private TextBox hotkeyTextBox;
         private Label versionLabel;
         private Button saveButton;
+        private CheckBox autoHideCheckBox;
+        private CheckBox topMostCheckBox;
     }
 }

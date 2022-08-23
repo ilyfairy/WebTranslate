@@ -6,6 +6,7 @@
 
 ## 配置  
 
-默认Ctrl+Shift+T 打开翻译  
-Ctrl+Tab|Shift 切换翻译  
-Ctrl+F12 打开设置  
+Ctrl+Shift+T  打开翻译  
+Ctrl+Tab|Shift  切换翻译  
+Ctrl+Shift+S  交换语言  
+Ctrl+F12  打开设置  

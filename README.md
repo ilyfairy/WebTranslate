@@ -2,7 +2,7 @@
 
 使用的WebView2  
 
-
+![WebTranslate](https://github.com/ilyfairy/WebTranslate/blob/master/Img/WebTranslate.webp)
 
 ## 配置  
 

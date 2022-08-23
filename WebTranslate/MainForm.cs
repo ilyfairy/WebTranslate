@@ -30,7 +30,7 @@ public partial class MainForm : Form
     public MainForm(bool isHide)
     {
         InitializeComponent();
-        
+
         if (isHide)
         {
             this.Opacity = 0;
@@ -105,12 +105,16 @@ public partial class MainForm : Form
         }
         return ok;
     }
-    private void Web_KeyDown(object? sender, KeyEventArgs e)
+    private async void Web_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (e.KeyCode)
         {
             case Keys.W:
-                if(ModifierKeys == Keys.Control) Hide();
+                if (ModifierKeys == Keys.Control)
+                {
+                    Hide();
+                    e.Handled = true;
+                }
                 break;
             case Keys.Tab:
                 if((ModifierKeys & Keys.Control) == Keys.Control)
@@ -118,10 +122,27 @@ public partial class MainForm : Form
                     if((ModifierKeys & Keys.Shift) == Keys.Shift)
                     {
                         Last();
+                        e.Handled = true;
                     }
                     else
                     {
                         Next();
+                        e.Handled = true;
+                    }
+                }
+                break;
+            case Keys.S:
+                if(ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Shift))
+                {
+                    if (Web.Source.Host == Constants.GoogleTranslate.Host)
+                    {
+                        await Web.GoogleTranslateSwitchLanguage();
+                        e.Handled = true;
+                    }
+                    else if (Web.Source.Host == Constants.BaiduTranslate.Host)
+                    {
+                        await Web.BaiduTranslateSwitchLanguage();
+                        e.Handled = true;
                     }
                 }
                 break;
@@ -129,12 +150,12 @@ public partial class MainForm : Form
                 if (ModifierKeys == Keys.Control)
                 {
                     SettingForm.ShowWindow();
+                    e.Handled = true;
                 }
                 break;
             default:
                 return;
         }
-        e.Handled = true;
     }
     private void MainForm_Deactivate(object? sender, EventArgs e)
     {
@@ -272,7 +293,7 @@ public partial class MainForm : Form
 
 
     #region Notify
-    private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+    private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
     {
         ShowWindow();
     }

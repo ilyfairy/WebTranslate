@@ -24,6 +24,25 @@ public static class WebViewEx
         await web.ExecuteScriptAsync("document.body.style.overflowY = 'auto'"); //自动垂直滚动条
 
     }
+    public static async Task GoogleTranslateFocusInputBox(this WebView2 web)
+    {
+        await web.ExecuteScriptAsync("document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea')?.focus();");
+    }
+    public static async Task GoogleTranslateInput(this WebView2 web, string text)
+    {
+        await web.ExecuteScriptAsync($@"
+var input = document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea');
+var inputEvent = document.createEvent('HTMLEvents');
+inputEvent.initEvent('input', true, true);
+input.value = '{UnicodeEncode(text)}';
+input.dispatchEvent(inputEvent)
+");
+    }
+    public static async Task GoogleTranslateSwitchLanguage(this WebView2 web)
+    {
+        await web.ExecuteScriptAsync("document.querySelector('html > body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > c-wiz > div > c-wiz > div > div > span > button > div').click();");
+    }
+
     public static async Task BaiduTranslateBeautify(this WebView2 web)
     {
         await web.ExecuteScriptAsync("document.querySelector('#header').remove();"); //顶栏
@@ -52,17 +71,11 @@ try{
         await web.ExecuteScriptAsync("document.querySelector('.app-guide')?.remove();");
         await web.ExecuteScriptAsync("document.querySelector('.op-favor-container')?.remove();"); // 收藏夹
     }
-    public static async Task GoogleTranslateFocusInputBox(this WebView2 web)
-    {
-        await web.ExecuteScriptAsync("document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea')?.focus();");
-    }
-
     public static async Task BaiduTranslateFocusInputBox(this WebView2 web)
     {
         await web.ExecuteScriptAsync("document.querySelector('#baidu_translate_input').focus();");
 
     }
-
     public static async Task BaiduTranslateInput(this WebView2 web, string text)
     {
         await web.ExecuteScriptAsync($@"
@@ -73,16 +86,9 @@ input.value = '{UnicodeEncode(text)}';
 input.dispatchEvent(inputEvent)
 ");
     }
-
-    public static async Task GoogleTranslateInput(this WebView2 web, string text)
+    public static async Task BaiduTranslateSwitchLanguage(this WebView2 web)
     {
-        await web.ExecuteScriptAsync($@"
-var input = document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea');
-var inputEvent = document.createEvent('HTMLEvents');
-inputEvent.initEvent('input', true, true);
-input.value = '{UnicodeEncode(text)}';
-input.dispatchEvent(inputEvent)
-");
+        await web.ExecuteScriptAsync("document.querySelector('.exchange-mask').click();");
     }
 
     private static string UnicodeEncode(string text)

@@ -94,13 +94,15 @@ public partial class MainForm : Form
         await Task.Delay(500);
         RegistryGlobalHotKey();
     }
-    private void SettingForm_ConfigUpdated(object? sender, WindowConfig oldConfig)
+    private bool SettingForm_ConfigUpdated(object sender, WindowConfig oldConfig)
     {
+        bool ok = true;
         if(oldConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || oldConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
         {
-            RegistryGlobalHotKey();
+            ok |= RegistryGlobalHotKey();
         }
         SaveConfig();
+        return ok;
     }
     private void Web_KeyDown(object? sender, KeyEventArgs e)
     {
@@ -125,8 +127,7 @@ public partial class MainForm : Form
             case Keys.F12:
                 if (ModifierKeys == Keys.Control)
                 {
-                    SettingForm.Show();
-                    SettingForm.Activate();
+                    SettingForm.ShowWindow();
                 }
                 break;
             default:
@@ -201,7 +202,7 @@ public partial class MainForm : Form
         }
         catch { }
     }
-    private void RegistryGlobalHotKey()
+    private bool RegistryGlobalHotKey()
     {
         HotKey.Remove(Constants.GlobalHotKey);
         bool ok = HotKey.Add(Constants.GlobalHotKey, Config.GlobalHotKey.Modifier, Config.GlobalHotKey.Key, HotKeyCallback);
@@ -209,6 +210,7 @@ public partial class MainForm : Form
         {
             MessageBox.Show("ÈÈ¼ü×¢²áÊ§°Ü");
         }
+        return ok;
     }
     #endregion
 

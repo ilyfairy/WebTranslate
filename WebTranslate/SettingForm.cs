@@ -17,7 +17,7 @@ public partial class SettingForm : Form
     public readonly string Version;
     public readonly WindowConfig Config;
     private WindowConfig OldConfig;
-    public event EventHandler<WindowConfig>? ConfigUpdated;
+    public event Func<object,WindowConfig,bool>? ConfigUpdated;
 
     public KeyCombination TempHotKey = new();
     public bool isFristInput = false;
@@ -36,7 +36,7 @@ public partial class SettingForm : Form
 
     private void SettingForm_Load(object sender, EventArgs e)
     {
-        saveButton.Focus();
+        
     }
 
     private void ShowHotKey()
@@ -46,13 +46,33 @@ public partial class SettingForm : Form
 
     private void HotKey_TextBox_Changed(object? sender, KeyEventArgs e)
     {
-        if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey) return;
-        if (e.KeyCode is Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey) return;
-        if (e.KeyCode is Keys.LWin or Keys.RWin) return;
-        if (e.KeyCode is Keys.Alt) return;
-
         TempHotKey.Key = Keys.None;
         TempHotKey.Modifier = KeyModifiers.None;
+
+        if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey)
+        {
+            TempHotKey.Modifier = KeyModifiers.Control;
+            ShowHotKey();
+            return;
+        }
+        if (e.KeyCode is Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey)
+        {
+            TempHotKey.Modifier = KeyModifiers.Shift;
+            ShowHotKey();
+            return;
+        }
+        if (e.KeyCode is Keys.LWin or Keys.LWin)
+        {
+            TempHotKey.Modifier = KeyModifiers.Windows;
+            ShowHotKey();
+            return;
+        }
+        if (e.KeyCode is Keys.Menu)
+        {
+            TempHotKey.Modifier = KeyModifiers.Alt;
+            ShowHotKey();
+            return;
+        }
 
         if (WinApi.IsKeyDown(Keys.LWin) || WinApi.IsKeyDown(Keys.RWin))
             TempHotKey.Modifier |= KeyModifiers.Windows;
@@ -62,17 +82,23 @@ public partial class SettingForm : Form
             TempHotKey.Modifier |= KeyModifiers.Shift;
         if (WinApi.IsKeyDown(Keys.Menu))
             TempHotKey.Modifier |= KeyModifiers.Alt;
+        if(TempHotKey.Modifier == KeyModifiers.None) TempHotKey.Modifier = KeyModifiers.Control;
         TempHotKey.Key = e.KeyCode;
         ShowHotKey();
     }
 
-    protected override void OnShown(EventArgs e)
+
+    public void ShowWindow()
     {
+        Text = "设置";
         isFristInput = true;
         OldConfig = Config.Clone();
         hotkeyTextBox.Text = OldConfig.GlobalHotKey.ToString();
         TempHotKey.Modifier = Config.GlobalHotKey.Modifier;
         TempHotKey.Key = Config.GlobalHotKey.Key;
+        Show();
+        Activate();
+        saveButton.Focus();
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -86,7 +112,15 @@ public partial class SettingForm : Form
     {
         Config.GlobalHotKey.Modifier = TempHotKey.Modifier;
         Config.GlobalHotKey.Key = TempHotKey.Key;
-        ConfigUpdated?.Invoke(this, OldConfig);
+        bool ok = ConfigUpdated?.Invoke(this, OldConfig) ?? false;
+        if (ok)
+        {
+            this.Text = "保存成功";
+        }
+        else
+        {
+            this.Text = "保存失败";
+        }
     }
 
 }

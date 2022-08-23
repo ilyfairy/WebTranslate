@@ -70,7 +70,6 @@ public partial class MainForm : Form
     }
 
 
-
     #region Event
     private async void MainForm_Load(object sender, EventArgs e)
     {
@@ -91,56 +90,37 @@ public partial class MainForm : Form
     }
     private async void Web_KeyDown(object? sender, KeyEventArgs e)
     {
-        switch (e.KeyCode)
+        switch (ModifierKeys, e.KeyCode)
         {
-            case Keys.W:
-                if (ModifierKeys == Keys.Control)
+            case (Keys.Control, Keys.W): //关闭
+                Hide();
+                break;
+            case (Keys.Control, Keys.Tab): //下一个标签页
+                Next();
+                break;
+            case (Keys.Control | Keys.Shift, Keys.Tab): //上一个标签页
+                Last();
+                break;
+            case (Keys.Control | Keys.Shift, Keys.S): //交换语言
+                if (Web.Source.Host == Constants.GoogleTranslate.Host)
                 {
-                    Hide();
+                    await Web.GoogleTranslateSwitchLanguage();
+                    e.Handled = true;
+                }
+                else if (Web.Source.Host == Constants.BaiduTranslate.Host)
+                {
+                    await Web.BaiduTranslateSwitchLanguage();
                     e.Handled = true;
                 }
                 break;
-            case Keys.Tab:
-                if((ModifierKeys & Keys.Control) == Keys.Control)
-                {
-                    if((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    {
-                        Last();
-                        e.Handled = true;
-                    }
-                    else
-                    {
-                        Next();
-                        e.Handled = true;
-                    }
-                }
-                break;
-            case Keys.S:
-                if(ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Shift))
-                {
-                    if (Web.Source.Host == Constants.GoogleTranslate.Host)
-                    {
-                        await Web.GoogleTranslateSwitchLanguage();
-                        e.Handled = true;
-                    }
-                    else if (Web.Source.Host == Constants.BaiduTranslate.Host)
-                    {
-                        await Web.BaiduTranslateSwitchLanguage();
-                        e.Handled = true;
-                    }
-                }
-                break;
-            case Keys.F12:
-                if (ModifierKeys == Keys.Control)
-                {
-                    TopMost = false; //防止设置窗口被覆盖
-                    SettingForm.ShowWindow();
-                    e.Handled = true;
-                }
+            case (Keys.Control, Keys.F12): //设置
+                TopMost = false; //取消置顶 防止设置窗口被覆盖
+                SettingForm.ShowWindow();
                 break;
             default:
                 return;
         }
+        e.Handled = true;
     }
     private bool SettingForm_ConfigUpdated(object sender, WindowConfig newConfig)
     {

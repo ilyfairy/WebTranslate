@@ -302,7 +302,7 @@ public partial class MainForm : Form
         isExit = true;
         Close();
     }
-    private void notifyStartup_Click(object sender, EventArgs e)
+    private void NotifyStartup_Click(object sender, EventArgs e)
     {
         notifyStartup.Checked = !notifyStartup.Checked;
         if(registryRun == null)

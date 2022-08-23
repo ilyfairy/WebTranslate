@@ -69,7 +69,7 @@
             this.notifyStartup.Name = "notifyStartup";
             this.notifyStartup.Size = new System.Drawing.Size(160, 32);
             this.notifyStartup.Text = "开机自启";
-            this.notifyStartup.Click += new System.EventHandler(this.notifyStartup_Click);
+            this.notifyStartup.Click += new System.EventHandler(this.NotifyStartup_Click);
             // 
             // notifyExit
             // 

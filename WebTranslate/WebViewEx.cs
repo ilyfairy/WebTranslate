@@ -96,7 +96,7 @@ input.dispatchEvent(inputEvent)
         StringBuilder s = new();
         for (int i = 0; i < text.Length; i++)
         {
-            s.AppendFormat($"\\u{(int)text[i]:x4}");
+            s.Append($"\\u{(int)text[i]:x4}");
         }
         return s.ToString();
     }

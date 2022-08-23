@@ -79,8 +79,8 @@ public partial class MainForm : Form
     #region Event
     private async void MainForm_Load(object sender, EventArgs e)
     {
-        await NewWeb("https://translate.google.cn/");
-        await CreateWebView("https://fanyi.baidu.com/");
+        await NewWeb(Constants.GoogleTranslateUrl);
+        await CreateWebView(Constants.BaiduTranslateUrl);
         try
         {
             registryRun = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
@@ -157,7 +157,6 @@ public partial class MainForm : Form
                 Web.Source = uri;
             }
         }
-        _ = Beautify();
     }
     private void Web_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
     {
@@ -219,13 +218,21 @@ public partial class MainForm : Form
     private async void HotKeyCallback()
     {
         ShowWindow();
-        await Web.GoogleTranslateFocusInputBox();
         string text = Clipboard.GetText();
-        if (text != LastInputText && !string.IsNullOrWhiteSpace(text))
+        if (text == LastInputText || string.IsNullOrWhiteSpace(text)) return;
+        LastInputText = text;
+        switch (Web.Source.Host)
         {
-            LastInputText = text;
-            await Web.GoogleTranslateInput(text);
+            case Constants.GoogleTranslateHost:
+                await Web.GoogleTranslateFocusInputBox();
+                await Web.GoogleTranslateInput(text);
+                break;
+            case Constants.BaiduTranslateHost:
+                await Web.BaiduTranslateFocusInputBox();
+                await Web.BaiduTranslateInput(text);
+                break;
         }
+     
     }
     #endregion
 
@@ -347,16 +354,17 @@ public partial class MainForm : Form
         panel.Controls.Clear();
         panel.Controls.Add(Web);
         Web.Focus();
+        _ = Beautify();
     }
     private async Task Beautify()
     {
         await Task.Delay(100);
         switch (Web.Source.Host)
         {
-            case "translate.google.cn":
+            case Constants.GoogleTranslateHost:
                 await Web.GoogleTranslateBeautify();
                 break;
-            case "fanyi.baidu.com":
+            case Constants.BaiduTranslateHost:
                 await Web.BaiduTranslateBeautify();
                 break;
         }

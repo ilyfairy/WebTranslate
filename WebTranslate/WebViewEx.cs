@@ -1,7 +1,9 @@
 ﻿using Microsoft.Web.WebView2.WinForms;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Ilyfairy.Tools.WebTranslate;
 
@@ -54,20 +56,42 @@ try{
     {
         await web.ExecuteScriptAsync("document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea')?.focus();");
     }
+
+    public static async Task BaiduTranslateFocusInputBox(this WebView2 web)
+    {
+        await web.ExecuteScriptAsync("document.querySelector('#baidu_translate_input').focus();");
+
+    }
+
+    public static async Task BaiduTranslateInput(this WebView2 web, string text)
+    {
+        await web.ExecuteScriptAsync($@"
+var input = document.querySelector('#baidu_translate_input');
+var inputEvent = document.createEvent('HTMLEvents');
+inputEvent.initEvent('input', true, true);
+input.value = '{UnicodeEncode(text)}';
+input.dispatchEvent(inputEvent)
+");
+    }
+
     public static async Task GoogleTranslateInput(this WebView2 web, string text)
     {
-        char[] cs = text.ToCharArray();
-        StringBuilder s = new();
-        for (int i = 0; i < cs.Length; i++)
-        {
-            s.AppendFormat($"\\u{(int)cs[i]:x4}");
-        }
         await web.ExecuteScriptAsync($@"
 var input = document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea');
 var inputEvent = document.createEvent('HTMLEvents');
 inputEvent.initEvent('input', true, true);
-input.value = '{s}';
+input.value = '{UnicodeEncode(text)}';
 input.dispatchEvent(inputEvent)
 ");
+    }
+
+    private static string UnicodeEncode(string text)
+    {
+        StringBuilder s = new();
+        for (int i = 0; i < text.Length; i++)
+        {
+            s.AppendFormat($"\\u{(int)text[i]:x4}");
+        }
+        return s.ToString();
     }
 }

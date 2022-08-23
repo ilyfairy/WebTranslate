@@ -26,6 +26,10 @@ public partial class SettingForm : Form
         
 
         Version = (Assembly.GetEntryAssembly()?.GetCustomAttributes()?.FirstOrDefault(v => v is AssemblyFileVersionAttribute) as AssemblyFileVersionAttribute)?.Version ?? "Unknow";
+        if (Version.LastIndexOf('.') is int verLastDot && verLastDot!= -1)
+        {
+            Version = Version[0..verLastDot];
+        }
         versionLabel.Text = $"{Version}";
         Config = config;
         NewConfig = Config.Clone();

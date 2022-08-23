@@ -16,7 +16,7 @@
 	  <RootNamespace>Ilyfairy.Tools.WebTranslate</RootNamespace>
 	  <Title>WebTranslate</Title>
 	  <Authors>ilyfairy</Authors>
-	  <VersionPrefix>1.0.4</VersionPrefix>
+	  <VersionPrefix>1.0.5.0</VersionPrefix>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

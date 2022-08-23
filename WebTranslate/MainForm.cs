@@ -2,10 +2,6 @@ using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Win32;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Net.Mail;
-using System.Reflection;
-using System.Security.Policy;
 using YamlDotNet.Serialization;
 
 namespace Ilyfairy.Tools.WebTranslate;
@@ -79,8 +75,8 @@ public partial class MainForm : Form
     #region Event
     private async void MainForm_Load(object sender, EventArgs e)
     {
-        await NewWeb(Constants.GoogleTranslateUrl);
-        await CreateWebView(Constants.BaiduTranslateUrl);
+        await NewWeb(Constants.GoogleTranslate.ToString());
+        await CreateWebView(Constants.BaiduTranslate.ToString());
         try
         {
             registryRun = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
@@ -221,18 +217,17 @@ public partial class MainForm : Form
         string text = Clipboard.GetText();
         if (text == LastInputText || string.IsNullOrWhiteSpace(text)) return;
         LastInputText = text;
-        switch (Web.Source.Host)
+        if(Web.Source.Host == Constants.GoogleTranslate.Host)
         {
-            case Constants.GoogleTranslateHost:
-                await Web.GoogleTranslateFocusInputBox();
-                await Web.GoogleTranslateInput(text);
-                break;
-            case Constants.BaiduTranslateHost:
-                await Web.BaiduTranslateFocusInputBox();
-                await Web.BaiduTranslateInput(text);
-                break;
+            await Web.GoogleTranslateFocusInputBox();
+            await Web.GoogleTranslateInput(text);
         }
-     
+        else if (Web.Source.Host == Constants.BaiduTranslate.Host)
+        {
+
+            await Web.BaiduTranslateFocusInputBox();
+            await Web.BaiduTranslateInput(text);
+        }
     }
     #endregion
 
@@ -359,14 +354,13 @@ public partial class MainForm : Form
     private async Task Beautify()
     {
         await Task.Delay(100);
-        switch (Web.Source.Host)
+        if (Web.Source.Host == Constants.GoogleTranslate.Host)
         {
-            case Constants.GoogleTranslateHost:
-                await Web.GoogleTranslateBeautify();
-                break;
-            case Constants.BaiduTranslateHost:
-                await Web.BaiduTranslateBeautify();
-                break;
+            await Web.GoogleTranslateBeautify();
+        }
+        else if (Web.Source.Host == Constants.BaiduTranslate.Host)
+        {
+            await Web.BaiduTranslateBeautify();
         }
     }
     private async Task<WebView2> CreateWebView(string url)

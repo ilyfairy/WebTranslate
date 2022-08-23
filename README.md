@@ -4,7 +4,7 @@
 
 ![WebTranslate](https://github.com/ilyfairy/WebTranslate/blob/master/Img/WebTranslate.webp)
 
-现在支持以下翻译网页  
+## 现在支持以下翻译网页  
 - 谷歌翻译 translate.google.cn
 - 百度翻译 fanyi.baidu.com
 

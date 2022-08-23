@@ -66,6 +66,7 @@ public partial class MainForm : Form
         Width = Config!.Width;
         Height = Config.Height;
         SaveConfig();
+
         SettingForm = new SettingForm(Config);
         SettingForm.ConfigUpdated += SettingForm_ConfigUpdated;
         SettingForm.ConfigWindowClosed += SettingForm_ConfigWindowClosed;
@@ -77,6 +78,7 @@ public partial class MainForm : Form
     {
         webs.Add(new GoogleTranslateTab());
         webs.Add(new BaiduTranslateTab());
+        webs.Add(new DeeplTranslateTab());
         foreach (var item in webs)
         {
             item.KeyDown += Web_KeyDown;
@@ -85,7 +87,7 @@ public partial class MainForm : Form
 
         try
         {
-            registryRun = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            registryRun = Registry.CurrentUser.CreateSubKey(Constants.RegistryRun);
             if ((registryRun.GetValue(Constants.RegistryName) as string) == startupCmd)
             {
                 notifyStartup.Checked = true;

@@ -94,14 +94,19 @@ public partial class MainForm : Form
         await Task.Delay(500);
         RegistryGlobalHotKey();
     }
-    private bool SettingForm_ConfigUpdated(object sender, WindowConfig oldConfig)
+    private bool SettingForm_ConfigUpdated(object sender, WindowConfig newConfig)
     {
         bool ok = true;
-        if(oldConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || oldConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
+        if(newConfig.GlobalHotKey.Key != Config.GlobalHotKey.Key || newConfig.GlobalHotKey.Modifier != Config.GlobalHotKey.Modifier)
         {
-            ok |= RegistryGlobalHotKey();
+            ok |= RegistryGlobalHotKey(newConfig.GlobalHotKey);
         }
-        SaveConfig();
+        if (ok)
+        {
+            Config.GlobalHotKey.Modifier = newConfig.GlobalHotKey.Modifier;
+            Config.GlobalHotKey.Key = newConfig.GlobalHotKey.Key;
+            SaveConfig();
+        }
         return ok;
     }
     private void Web_KeyDown(object? sender, KeyEventArgs e)
@@ -135,7 +140,6 @@ public partial class MainForm : Form
         }
         e.Handled = true;
     }
-
     private void MainForm_Deactivate(object? sender, EventArgs e)
     {
         if (Config.AutoHide)
@@ -155,7 +159,6 @@ public partial class MainForm : Form
         }
         _ = Beautify();
     }
-
     private void Web_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
     {
         _ = Beautify();
@@ -202,15 +205,27 @@ public partial class MainForm : Form
         }
         catch { }
     }
-    private bool RegistryGlobalHotKey()
+    private bool RegistryGlobalHotKey(KeyCombination? hotkey = null)
     {
+        hotkey ??= Config.GlobalHotKey;
         HotKey.Remove(Constants.GlobalHotKey);
-        bool ok = HotKey.Add(Constants.GlobalHotKey, Config.GlobalHotKey.Modifier, Config.GlobalHotKey.Key, HotKeyCallback);
+        bool ok = HotKey.Add(Constants.GlobalHotKey, hotkey.Modifier, hotkey.Key, HotKeyCallback);
         if (!ok)
         {
             MessageBox.Show("ÈÈ¼ü×¢²áÊ§°Ü");
         }
         return ok;
+    }
+    private async void HotKeyCallback()
+    {
+        ShowWindow();
+        await Web.GoogleTranslateFocusInputBox();
+        string text = Clipboard.GetText();
+        if (text != LastInputText && !string.IsNullOrWhiteSpace(text))
+        {
+            LastInputText = text;
+            await Web.GoogleTranslateInput(text);
+        }
     }
     #endregion
 
@@ -241,6 +256,15 @@ public partial class MainForm : Form
             Hide();
             e.Cancel = true;
         }
+    }
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Constants.WM_HOTKEY)
+        {
+            HotKey.LoopAction((int)m.WParam);
+        }
+        base.WndProc(ref m);
+
     }
     #endregion
 
@@ -278,31 +302,6 @@ public partial class MainForm : Form
         else
         {
             registryRun.DeleteValue(Constants.RegistryName);
-        }
-    }
-    #endregion
-
-
-
-    #region GlobalHotKey
-    protected override void WndProc(ref Message m)
-    {
-        if (m.Msg == Constants.WM_HOTKEY)
-        {
-            HotKey.LoopAction((int)m.WParam);
-        }
-        base.WndProc(ref m);
-
-    }
-    private async void HotKeyCallback()
-    {
-        ShowWindow();
-        await Web.GoogleTranslateFocusInputBox();
-        string text = Clipboard.GetText();
-        if (text != LastInputText && !string.IsNullOrWhiteSpace(text))
-        {
-            LastInputText = text;
-            await Web.GoogleTranslateInput(text);
         }
     }
     #endregion

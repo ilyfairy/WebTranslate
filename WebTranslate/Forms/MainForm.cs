@@ -3,13 +3,15 @@ using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Win32;
 using System.ComponentModel;
 using YamlDotNet.Serialization;
+using Ilyfairy.Tools.WebTranslate;
+using Ilyfairy.Tools.WebTranslate.TranslateTab;
 
-namespace Ilyfairy.Tools.WebTranslate;
+namespace Ilyfairy.Tools.WebTranslate.Forms;
 
 public partial class MainForm : Form
 {
-    private readonly List<WebView2> webs = new();
-    private WebView2 Web => webs[index]; //标签栏
+    private readonly List<WebTranslateTabBase> webs = new();
+    private WebTranslateTabBase Web => webs[index]; //标签栏
     private int index = 0; //标签栏索引
 
     private readonly HotKeyManager HotKey; //热键管理
@@ -73,8 +75,14 @@ public partial class MainForm : Form
     #region Event
     private async void MainForm_Load(object sender, EventArgs e)
     {
-        await NewWeb(Constants.GoogleTranslate.ToString());
-        await CreateWebView(Constants.BaiduTranslate.ToString());
+        webs.Add(new GoogleTranslateTab());
+        webs.Add(new BaiduTranslateTab());
+        foreach (var item in webs)
+        {
+            item.KeyDown += Web_KeyDown;
+        }
+        panel.Controls.Add(Web.WebView);
+
         try
         {
             registryRun = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
@@ -88,7 +96,7 @@ public partial class MainForm : Form
         await Task.Delay(500);
         RegistryGlobalHotKey();
     }
-    private async void Web_KeyDown(object? sender, KeyEventArgs e)
+    private void Web_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (ModifierKeys, e.KeyCode)
         {
@@ -102,16 +110,7 @@ public partial class MainForm : Form
                 Last();
                 break;
             case (Keys.Control | Keys.Shift, Keys.S): //交换语言
-                if (Web.Source.Host == Constants.GoogleTranslate.Host)
-                {
-                    await Web.GoogleTranslateSwitchLanguage();
-                    e.Handled = true;
-                }
-                else if (Web.Source.Host == Constants.BaiduTranslate.Host)
-                {
-                    await Web.BaiduTranslateSwitchLanguage();
-                    e.Handled = true;
-                }
+                Web.SwitchLanguage();
                 break;
             case (Keys.Control, Keys.F12): //设置
                 TopMost = false; //取消置顶 防止设置窗口被覆盖
@@ -155,20 +154,6 @@ public partial class MainForm : Form
         {
             Hide();
         }
-    }
-    private void Web_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
-    {
-        if (Web.Tag is Uri uri)
-        {
-            if (Web.Source.Host != uri.Host)
-            {
-                Web.Source = uri;
-            }
-        }
-    }
-    private void Web_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
-    {
-        _ = Beautify();
     }
     #endregion
 
@@ -223,28 +208,14 @@ public partial class MainForm : Form
         }
         return ok;
     }
-    private async void HotKeyCallback()
+    private void HotKeyCallback()
     {
         ShowWindow();
         string text = Clipboard.GetText();
-        await Web.GoogleTranslateFocusInputBox();
-        await Web.BaiduTranslateFocusInputBox();
+        Web.FocusInput();
         if (text == LastInputText || string.IsNullOrWhiteSpace(text)) return;
         LastInputText = text;
-        if(Web.Source.Host == Constants.GoogleTranslate.Host)
-        {
-            await Web.GoogleTranslateInput(text);
-        }
-        else if (Web.Source.Host == Constants.BaiduTranslate.Host)
-        {
-            await Web.BaiduTranslateInput(text);
-        }
-
-        Action f = F;
-    }
-    void F()
-    {
-
+        Web.Input(text);
     }
     #endregion
 
@@ -328,12 +299,6 @@ public partial class MainForm : Form
 
 
     #region WebUtil
-    private async Task NewWeb(string url)
-    {
-        var web = await CreateWebView(url);
-        panel.Controls.Add(web);
-        web.Focus();
-    }
     private void Last()
     {
         if (index > 0)
@@ -349,7 +314,7 @@ public partial class MainForm : Form
     }
     private void Next()
     {
-        _ = Beautify();
+        Web.Trim();
         if (index < webs.Count - 1)
         {
             index++;
@@ -364,36 +329,9 @@ public partial class MainForm : Form
     private void SwitchWeb()
     {
         panel.Controls.Clear();
-        panel.Controls.Add(Web);
-        Web.Focus();
-        _ = Beautify();
-    }
-    private async Task Beautify()
-    {
-        await Task.Delay(100);
-        if (Web.Source.Host == Constants.GoogleTranslate.Host)
-        {
-            await Web.GoogleTranslateBeautify();
-        }
-        else if (Web.Source.Host == Constants.BaiduTranslate.Host)
-        {
-            await Web.BaiduTranslateBeautify();
-        }
-    }
-    private async Task<WebView2> CreateWebView(string url)
-    {
-        WebView2 web = new();
-        web.Dock = DockStyle.Fill;
-        await web.EnsureCoreWebView2Async();
-        web.KeyDown += Web_KeyDown; ;
-        web.NavigationStarting += Web_NavigationStarting;
-        web.NavigationCompleted += Web_NavigationCompleted;
-        web.NavigateToString("<span>loading...<span>");
-        var uri = new Uri(url);
-        web.Source = new Uri(url);
-        web.Tag = uri;
-        webs.Add(web);
-        return web;
+        panel.Controls.Add(Web.WebView);
+        Web.WebView.Focus();
+        Web.Trim();
     }
     #endregion
 

@@ -20,12 +20,15 @@ namespace Ilyfairy.Tools.WebTranslate
         }
         public override string ToString()
         {
-            string key =
-                (Modifier.HasFlag(KeyModifiers.Windows) ? "Win + " : "") +
-                (Modifier.HasFlag(KeyModifiers.Control) ? "Ctrl + " : "") +
-                (Modifier.HasFlag(KeyModifiers.Shift) ? "Shift + " : "") +
-                (Modifier.HasFlag(KeyModifiers.Alt) ? "Alt + " : "") + Key.ToString();
-            return key;
+            HashSet<ValueType> keys = new(4);
+            if (Modifier.HasFlag(KeyModifiers.Windows)) keys.Add(KeyModifiers.Windows);
+            if (Modifier.HasFlag(KeyModifiers.Control)) keys.Add(KeyModifiers.Control);
+            if (Modifier.HasFlag(KeyModifiers.Shift)) keys.Add(KeyModifiers.Shift);
+            if (Modifier.HasFlag(KeyModifiers.Alt)) keys.Add(KeyModifiers.Alt);
+            if (Key != Keys.None) keys.Add(Key);
+
+            if (Modifier == KeyModifiers.None && Key == Keys.None) return "无";
+            return string.Join(" + ", keys);
         }
     }
 

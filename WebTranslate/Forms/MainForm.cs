@@ -203,6 +203,10 @@ public partial class MainForm : Form
     {
         hotkey ??= Config.GlobalHotKey;
         HotKey.Remove(Constants.GlobalHotKey);
+        if (hotkey.Key == Keys.None || hotkey.Modifier == KeyModifiers.None)
+        {
+            return true;
+        }
         bool ok = HotKey.Add(Constants.GlobalHotKey, hotkey.Modifier, hotkey.Key, HotKeyCallback);
         if (!ok)
         {
@@ -300,7 +304,7 @@ public partial class MainForm : Form
 
 
 
-    #region WebUtil
+    #region WebUtils
     private void Last()
     {
         if (index > 0)

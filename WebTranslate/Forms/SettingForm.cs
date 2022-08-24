@@ -23,7 +23,7 @@ public partial class SettingForm : Form
     {
         InitializeComponent();
         hotkeyTextBox.KeyDown += HotKey_TextBox_Changed;
-        
+        hotkeyTextBox.KeyUp += HotkeyTextBox_KeyUp;
 
         Version = (Assembly.GetEntryAssembly()?.GetCustomAttributes()?.FirstOrDefault(v => v is AssemblyFileVersionAttribute) as AssemblyFileVersionAttribute)?.Version ?? "Unknow";
         if (Version.LastIndexOf('.') is int verLastDot && verLastDot!= -1)
@@ -34,6 +34,8 @@ public partial class SettingForm : Form
         Config = config;
         NewConfig = Config.Clone();
     }
+
+
 
     private void SettingForm_Load(object sender, EventArgs e)
     {
@@ -49,31 +51,6 @@ public partial class SettingForm : Form
         NewConfig.GlobalHotKey.Key = Keys.None;
         NewConfig.GlobalHotKey.Modifier = KeyModifiers.None;
 
-        if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey)
-        {
-            NewConfig.GlobalHotKey.Modifier = KeyModifiers.Control;
-            ShowHotKey();
-            return;
-        }
-        if (e.KeyCode is Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey)
-        {
-            NewConfig.GlobalHotKey.Modifier = KeyModifiers.Shift;
-            ShowHotKey();
-            return;
-        }
-        if (e.KeyCode is Keys.LWin or Keys.LWin)
-        {
-            NewConfig.GlobalHotKey.Modifier = KeyModifiers.Windows;
-            ShowHotKey();
-            return;
-        }
-        if (e.KeyCode is Keys.Menu)
-        {
-            NewConfig.GlobalHotKey.Modifier = KeyModifiers.Alt;
-            ShowHotKey();
-            return;
-        }
-
         if (WinApi.IsKeyDown(Keys.LWin) || WinApi.IsKeyDown(Keys.RWin))
             NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Windows;
         if (WinApi.IsKeyDown(Keys.ControlKey))
@@ -83,9 +60,32 @@ public partial class SettingForm : Form
         if (WinApi.IsKeyDown(Keys.Menu))
             NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Alt;
         if(NewConfig.GlobalHotKey.Modifier == KeyModifiers.None) NewConfig.GlobalHotKey.Modifier = KeyModifiers.Control;
-        NewConfig.GlobalHotKey.Key = e.KeyCode;
+        if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey
+    or Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey
+    or Keys.LWin or Keys.RWin or Keys.Menu)
+        {
+        }
+        else
+        {
+            NewConfig.GlobalHotKey.Key = e.KeyCode;
+        }
         ShowHotKey();
     }
+
+    private void HotkeyTextBox_KeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey
+            or Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey
+            or Keys.LWin or Keys.RWin or Keys.Menu)
+        {
+            if (NewConfig.GlobalHotKey.Key == Keys.None)
+            {
+                NewConfig.GlobalHotKey.Modifier = KeyModifiers.None;
+            }
+        }
+        ShowHotKey();
+    }
+
     public void ShowWindow()
     {
         Text = "设置";
@@ -105,6 +105,7 @@ public partial class SettingForm : Form
         Hide();
         ConfigWindowClosed?.Invoke();
     }
+
     private void Save_Click(object sender, EventArgs e)
     {
         NewConfig.TopMost = topMostCheckBox.Checked;

@@ -7,13 +7,15 @@
 ## 介绍  
 
 现在支持以下翻译  
-- 谷歌翻译 translate.google.cn
-- 百度翻译 fanyi.baidu.com
+- 谷歌翻译 https://translate.google.cn
+- 百度翻译 https://fanyi.baidu.com
+- Deepl翻译 https://www.deepl.com/translator
 
 去除了一些广告以及多余的内容  
 
-## 配置  
+## 说明  
 
+按住Ctrl点击关闭按钮可以彻底退出,否则是隐藏  
 Ctrl+Shift+T  打开翻译  
 Ctrl+Tab|Shift  切换翻译  
 Ctrl+Shift+S  交换语言  

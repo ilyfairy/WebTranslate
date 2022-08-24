@@ -13,8 +13,9 @@
 
 去除了一些广告以及多余的内容  
 
-## 配置  
+## 说明  
 
+按住Ctrl点击关闭按钮可以彻底退出,否则是隐藏  
 Ctrl+Shift+T  打开翻译  
 Ctrl+Tab|Shift  切换翻译  
 Ctrl+Shift+S  交换语言  

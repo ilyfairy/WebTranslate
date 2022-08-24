@@ -179,7 +179,7 @@ public partial class MainForm : Form
         Config = new();
         Config.GlobalHotKey = new KeyCombination()
         {
-            Modifier = KeyModifiers.Control | KeyModifiers.Shift,
+            Modifier = KeyModifiers.Ctrl | KeyModifiers.Shift,
             Key = Keys.T
         };
         Config.Width = Width;

@@ -21,8 +21,8 @@ namespace Ilyfairy.Tools.WebTranslate
         public override string ToString()
         {
             HashSet<ValueType> keys = new(4);
-            if (Modifier.HasFlag(KeyModifiers.Windows)) keys.Add(KeyModifiers.Windows);
-            if (Modifier.HasFlag(KeyModifiers.Control)) keys.Add(KeyModifiers.Control);
+            if (Modifier.HasFlag(KeyModifiers.Win)) keys.Add(KeyModifiers.Win);
+            if (Modifier.HasFlag(KeyModifiers.Ctrl)) keys.Add(KeyModifiers.Ctrl);
             if (Modifier.HasFlag(KeyModifiers.Shift)) keys.Add(KeyModifiers.Shift);
             if (Modifier.HasFlag(KeyModifiers.Alt)) keys.Add(KeyModifiers.Alt);
             if (Key != Keys.None) keys.Add(Key);

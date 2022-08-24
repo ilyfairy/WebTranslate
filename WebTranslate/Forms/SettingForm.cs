@@ -52,14 +52,14 @@ public partial class SettingForm : Form
         NewConfig.GlobalHotKey.Modifier = KeyModifiers.None;
 
         if (WinApi.IsKeyDown(Keys.LWin) || WinApi.IsKeyDown(Keys.RWin))
-            NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Windows;
+            NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Win;
         if (WinApi.IsKeyDown(Keys.ControlKey))
-            NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Control;
+            NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Ctrl;
         if (WinApi.IsKeyDown(Keys.ShiftKey))
             NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Shift;
         if (WinApi.IsKeyDown(Keys.Menu))
             NewConfig.GlobalHotKey.Modifier |= KeyModifiers.Alt;
-        if(NewConfig.GlobalHotKey.Modifier == KeyModifiers.None) NewConfig.GlobalHotKey.Modifier = KeyModifiers.Control;
+        if(NewConfig.GlobalHotKey.Modifier == KeyModifiers.None) NewConfig.GlobalHotKey.Modifier = KeyModifiers.Ctrl;
         if (e.KeyCode is Keys.Control or Keys.ControlKey or Keys.LControlKey or Keys.RControlKey
     or Keys.Shift or Keys.ShiftKey or Keys.LShiftKey or Keys.RShiftKey
     or Keys.LWin or Keys.RWin or Keys.Menu)

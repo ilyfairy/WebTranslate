@@ -20,7 +20,7 @@ namespace Ilyfairy.Tools.WebTranslate
         }
         public override string ToString()
         {
-            HashSet<ValueType> keys = new(4);
+            HashSet<ValueType> keys = new(5);
             if (Modifier.HasFlag(KeyModifiers.Win)) keys.Add(KeyModifiers.Win);
             if (Modifier.HasFlag(KeyModifiers.Ctrl)) keys.Add(KeyModifiers.Ctrl);
             if (Modifier.HasFlag(KeyModifiers.Shift)) keys.Add(KeyModifiers.Shift);

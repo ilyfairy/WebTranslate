@@ -151,10 +151,14 @@ public partial class MainForm : Form
     }
     private void MainForm_Deactivate(object? sender, EventArgs e)
     {
-        //当设置窗口没有显示时,自动隐藏才会生效
-        if (Config.AutoHide && !SettingForm.Visible)
+        //如果最小化时,则不隐藏
+        if (WindowState != FormWindowState.Minimized)
         {
-            Hide();
+            //当设置窗口没有显示时,自动隐藏才会生效
+            if (Config.AutoHide && !SettingForm.Visible)
+            {
+                Hide();
+            }
         }
     }
     #endregion
@@ -164,6 +168,7 @@ public partial class MainForm : Form
     #region Methods
     private void ShowWindow()
     {
+        _ = this.Width;
         isHide = false;
         Opacity = 1;
         if (WindowState != FormWindowState.Maximized)

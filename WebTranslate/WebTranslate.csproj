@@ -9,7 +9,7 @@
 		<ApplicationIcon>Translate128.ico</ApplicationIcon>
 		<Title>WebTranslate</Title>
 		<Authors>ilyfairy</Authors>
-		<VersionPrefix>1.1.1</VersionPrefix>
+		<VersionPrefix>1.1.2</VersionPrefix>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 

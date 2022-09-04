@@ -47,6 +47,7 @@ public abstract class WebTranslateTabBase
     public abstract Uri Uri { get; }
     public abstract void Trim();
     public abstract void FocusInput();
-    public abstract void Input(string text);
+    public abstract void InputText(string text);
+    public abstract Task<string> GetInputText();
     public abstract void SwitchLanguage();
 }

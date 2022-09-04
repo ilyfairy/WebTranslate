@@ -28,7 +28,7 @@ public class DeeplTranslateTab : WebTranslateTabBase
         await WebView.ExecuteScriptAsync("document.querySelector('.lmt__textarea')?.focus();");
     }
 
-    public async override void Input(string text)
+    public async override void InputText(string text)
     {
         await WebView.ExecuteScriptAsync($@"
 var input = document.querySelector('.lmt__textarea');
@@ -44,4 +44,10 @@ input.dispatchEvent(inputEvent)
         await WebView.ExecuteScriptAsync("document.querySelector('.lmt__language_container_switch').click();");
     }
 
+    public override async Task<string> GetInputText()
+    {
+        string r = await WebView.ExecuteScriptAsync("document.querySelector('.lmt__textarea').value");
+        if (string.IsNullOrWhiteSpace(r) || r.Length <= 2) return "";
+        return r[1..^1];
+    }
 }

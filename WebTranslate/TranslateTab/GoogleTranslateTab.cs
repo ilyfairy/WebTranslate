@@ -29,7 +29,7 @@ public class GoogleTranslateTab : WebTranslateTabBase
         await WebView.ExecuteScriptAsync("document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea')?.focus();");
     }
 
-    public async override void Input(string text)
+    public async override void InputText(string text)
     {
         await WebView.ExecuteScriptAsync($@"
 var input = document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea');
@@ -45,4 +45,10 @@ input.dispatchEvent(inputEvent)
         await WebView.ExecuteScriptAsync("document.querySelector('html > body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > c-wiz > div > c-wiz > div > div > span > button > div').click();");
     }
 
+    public override async Task<string> GetInputText()
+    {
+        string r = await WebView.ExecuteScriptAsync("document.querySelector('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > c-wiz > span > span > div > textarea').value");
+        if (string.IsNullOrWhiteSpace(r) || r.Length <= 2) return "";
+        return r[1..^1];
+    }
 }

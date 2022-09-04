@@ -48,7 +48,7 @@ if((typeof window.isWhile) == 'undefined'){
         await WebView.ExecuteScriptAsync("document.querySelector('#baidu_translate_input').focus();");
     }
 
-    public async override void Input(string text)
+    public async override void InputText(string text)
     {
         await WebView.ExecuteScriptAsync($@"
 var input = document.querySelector('#baidu_translate_input');
@@ -64,4 +64,10 @@ input.dispatchEvent(inputEvent)
         await WebView.ExecuteScriptAsync("document.querySelector('.exchange-mask').click();");
     }
 
+    public override async Task<string> GetInputText()
+    {
+        string r = await WebView.ExecuteScriptAsync("document.querySelector('#baidu_translate_input').value");
+        if (string.IsNullOrWhiteSpace(r) || r.Length <= 2) return "";
+        return r[1..^1];
+    }
 }

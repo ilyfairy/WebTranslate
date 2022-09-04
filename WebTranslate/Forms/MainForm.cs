@@ -158,6 +158,7 @@ public partial class MainForm : Form
             if (Config.AutoHide && !SettingForm.Visible)
             {
                 Hide();
+                Visible = false;
             }
         }
     }
@@ -168,8 +169,8 @@ public partial class MainForm : Form
     #region Methods
     private void ShowWindow()
     {
-        _ = this.Width;
         isHide = false;
+        Visible = true;
         Opacity = 1;
         if (WindowState != FormWindowState.Maximized)
         {
@@ -226,7 +227,7 @@ public partial class MainForm : Form
         Web.FocusInput();
         if (text == LastInputText || string.IsNullOrWhiteSpace(text)) return;
         LastInputText = text;
-        Web.Input(text);
+        Web.InputText(text);
     }
     #endregion
 
@@ -315,12 +316,12 @@ public partial class MainForm : Form
         if (index > 0)
         {
             index--;
-            SwitchWeb();
+            SwitchWeb(index+1);
         }
         else
         {
             index = webs.Count - 1;
-            SwitchWeb();
+            SwitchWeb(0);
         }
     }
     private void Next()
@@ -329,16 +330,18 @@ public partial class MainForm : Form
         if (index < webs.Count - 1)
         {
             index++;
-            SwitchWeb();
+            SwitchWeb(index-1);
         }
         else
         {
             index = 0;
-            SwitchWeb();
+            SwitchWeb(webs.Count - 1);
         }
     }
-    private void SwitchWeb()
+    private async void SwitchWeb(int oldIndex)
     {
+        WebTranslateTabBase old = webs[oldIndex];
+        Web.InputText(await old.GetInputText());
         panel.Controls.Clear();
         panel.Controls.Add(Web.WebView);
         Web.WebView.Focus();

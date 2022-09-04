@@ -41,6 +41,7 @@ if((typeof window.isWhile) == 'undefined'){
 "); //子翻译小广告
         await WebView.ExecuteScriptAsync("document.querySelector('.app-guide')?.remove();");
         await WebView.ExecuteScriptAsync("document.querySelector('.op-favor-container')?.remove();"); // 收藏夹
+        await WebView.ExecuteScriptAsync("document.querySelector('.app-side-link')?.remove();"); // 广告
     }
 
     public async override void FocusInput()

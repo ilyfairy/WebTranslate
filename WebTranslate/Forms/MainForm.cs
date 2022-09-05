@@ -44,6 +44,7 @@ public partial class MainForm : Form
         panel.VerticalScroll.Enabled = false;
         notifyExit.Click += NotifyExit_Click;
         this.Deactivate += MainForm_Deactivate;
+        this.SizeChanged += MainForm_SizeChanged;
 
         if (File.Exists(configFileName))
         {
@@ -160,6 +161,15 @@ public partial class MainForm : Form
                 Hide();
                 Visible = false;
             }
+        }
+    }
+    private void MainForm_SizeChanged(object? sender, EventArgs e)
+    {
+        if (WindowState == FormWindowState.Normal)
+        {
+            Config.Width = this.Width;
+            Config.Height = this.Height;
+            SaveConfig();
         }
     }
     #endregion

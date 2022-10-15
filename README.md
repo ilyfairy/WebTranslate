@@ -8,6 +8,7 @@
 
 现在支持以下翻译  
 - 谷歌翻译 https://translate.google.cn
+- 必应翻译 https://www.bing.com/Translator
 - 百度翻译 https://fanyi.baidu.com
 - Deepl翻译 https://www.deepl.com/translator
 

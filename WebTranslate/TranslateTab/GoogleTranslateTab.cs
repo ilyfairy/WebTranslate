@@ -7,7 +7,7 @@ namespace Ilyfairy.Tools.WebTranslate.TranslateTab;
 
 public class GoogleTranslateTab : WebTranslateTabBase
 {
-    public override Uri Uri => new("https://translate.google.cn/");
+    public override Uri Uri => new("https://translate.google.com/");
 
     public async override void Trim()
     {

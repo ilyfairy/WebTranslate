@@ -18,6 +18,7 @@ public class BaiduTranslateTab : WebTranslateTabBase
         await WebView.ExecuteScriptAsync("document.querySelector('#main-outer > div > div').classList.remove('inner');");
         await WebView.ExecuteScriptAsync("document.querySelector('.domain-trans-wrapper').remove();"); //通用按钮
         await WebView.ExecuteScriptAsync("document.querySelector('.translate-setting').remove();");
+        //await WebView.ExecuteScriptAsync("document.querySelector('.trans-right trans-other-right').remove();"); //右边广告
         await WebView.ExecuteScriptAsync("document.querySelector('body > div.container').style.width = 'auto';"); //去除小大小,自适应大小
         await WebView.ExecuteScriptAsync("document.querySelector('.trans-operation-wrapper').style.margin = '0 0 10px 0';");
         //await WebView.ExecuteScriptAsync("document.querySelector('.trans-other-wrap').remove();"); //子翻译
@@ -31,6 +32,7 @@ if((typeof window.isWhile) == 'undefined'){
         document.querySelector('.hot-link-middle')?.remove();
         document.querySelector('.op-correct')?.remove(); //报错
         document.querySelector('.note-expand-btn')?.remove(); //笔记
+        document.querySelector('#sideBannerContainer').remove(); //右边广告
         let ses = document.querySelectorAll('#left-result-container > section'); //session
         if(ses.length != 0){
             ses.forEach(v=>v.remove())

@@ -11,22 +11,22 @@ namespace Ilyfairy.Tools.WebTranslate.Forms;
 public partial class MainForm : Form
 {
     private readonly List<WebTranslateTabBase> webs = new();
-    private WebTranslateTabBase Web => webs[index]; //±êÇ©À¸
-    private int index = 0; //±êÇ©À¸Ë÷Òı
+    private WebTranslateTabBase Web => webs[index]; //æ ‡ç­¾æ 
+    private int index = 0; //æ ‡ç­¾æ ç´¢å¼•
 
-    private readonly HotKeyManager HotKey; //ÈÈ¼ü¹ÜÀí
-    private string LastInputText = ""; //×îºóÊäÈëÎÄ±¾
+    private readonly HotKeyManager HotKey; //çƒ­é”®ç®¡ç†
+    private string LastInputText = ""; //æœ€åè¾“å…¥æ–‡æœ¬
 
-    private readonly string configFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"config.yaml"); //ÅäÖÃÎÄ¼şÃû
-    private WindowConfig Config; //´°¿ÚÅäÖÃ
+    private readonly string configFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"config.yaml"); //é…ç½®æ–‡ä»¶å
+    private WindowConfig Config; //çª—å£é…ç½®
 
-    private bool isExit = false; //ÊÇ·ñ¿ªÊ¼ÍË³ö
-    private bool isHide; //Æô¶¯Ê±ÊÇ·ñÒş²Ø
+    private bool isExit = false; //æ˜¯å¦å¼€å§‹é€€å‡º
+    private bool isHide; //å¯åŠ¨æ—¶æ˜¯å¦éšè—
 
-    private RegistryKey? registryRun = null; //×¢²á±íRun
-    private readonly string startupCmd = $"\"{Application.ExecutablePath}\" -nogui"; //×¢²á±íÆô¶¯ÏîÃüÁî
+    private RegistryKey? registryRun = null; //æ³¨å†Œè¡¨Run
+    private readonly string startupCmd = $"\"{Application.ExecutablePath}\" -nogui"; //æ³¨å†Œè¡¨å¯åŠ¨é¡¹å‘½ä»¤
 
-    private readonly SettingForm SettingForm; //ÉèÖÃ´°¿Ú
+    private readonly SettingForm SettingForm; //è®¾ç½®çª—å£
 
     public MainForm(bool isHide)
     {
@@ -78,6 +78,7 @@ public partial class MainForm : Form
     private async void MainForm_Load(object sender, EventArgs e)
     {
         webs.Add(new GoogleTranslateTab());
+        webs.Add(new BingTranslateTab());
         webs.Add(new BaiduTranslateTab());
         webs.Add(new DeeplTranslateTab());
         foreach (var item in webs)
@@ -103,20 +104,20 @@ public partial class MainForm : Form
     {
         switch (ModifierKeys, e.KeyCode)
         {
-            case (Keys.Control, Keys.W): //¹Ø±Õ
+            case (Keys.Control, Keys.W): //å…³é—­
                 Hide();
                 break;
-            case (Keys.Control, Keys.Tab): //ÏÂÒ»¸ö±êÇ©Ò³
+            case (Keys.Control, Keys.Tab): //ä¸‹ä¸€ä¸ªæ ‡ç­¾é¡µ
                 Next();
                 break;
-            case (Keys.Control | Keys.Shift, Keys.Tab): //ÉÏÒ»¸ö±êÇ©Ò³
+            case (Keys.Control | Keys.Shift, Keys.Tab): //ä¸Šä¸€ä¸ªæ ‡ç­¾é¡µ
                 Last();
                 break;
-            case (Keys.Control | Keys.Shift, Keys.S): //½»»»ÓïÑÔ
+            case (Keys.Control | Keys.Shift, Keys.S): //äº¤æ¢è¯­è¨€
                 Web.SwitchLanguage();
                 break;
-            case (Keys.Control, Keys.F12): //ÉèÖÃ
-                TopMost = false; //È¡ÏûÖÃ¶¥ ·ÀÖ¹ÉèÖÃ´°¿Ú±»¸²¸Ç
+            case (Keys.Control, Keys.F12): //è®¾ç½®
+                TopMost = false; //å–æ¶ˆç½®é¡¶ é˜²æ­¢è®¾ç½®çª—å£è¢«è¦†ç›–
                 SettingForm.ShowWindow();
                 break;
             default:
@@ -142,7 +143,7 @@ public partial class MainForm : Form
         return ok;
     }
 
-    //µ±ÉèÖÃ¹Ø±ÕÊ±,ÖÃ¶¥²Å»áÉúĞ§
+    //å½“è®¾ç½®å…³é—­æ—¶,ç½®é¡¶æ‰ä¼šç”Ÿæ•ˆ
     private void SettingForm_ConfigWindowClosed()
     {
         if (Config.TopMost)
@@ -152,10 +153,10 @@ public partial class MainForm : Form
     }
     private void MainForm_Deactivate(object? sender, EventArgs e)
     {
-        //Èç¹û×îĞ¡»¯Ê±,Ôò²»Òş²Ø
+        //å¦‚æœæœ€å°åŒ–æ—¶,åˆ™ä¸éšè—
         if (WindowState != FormWindowState.Minimized)
         {
-            //µ±ÉèÖÃ´°¿ÚÃ»ÓĞÏÔÊ¾Ê±,×Ô¶¯Òş²Ø²Å»áÉúĞ§
+            //å½“è®¾ç½®çª—å£æ²¡æœ‰æ˜¾ç¤ºæ—¶,è‡ªåŠ¨éšè—æ‰ä¼šç”Ÿæ•ˆ
             if (Config.AutoHide && !SettingForm.Visible)
             {
                 Hide();
@@ -226,7 +227,7 @@ public partial class MainForm : Form
         bool ok = HotKey.Add(Constants.GlobalHotKey, hotkey.Modifier, hotkey.Key, HotKeyCallback);
         if (!ok)
         {
-            MessageBox.Show("ÈÈ¼ü×¢²áÊ§°Ü");
+            MessageBox.Show("çƒ­é”®æ³¨å†Œå¤±è´¥");
         }
         return ok;
     }
@@ -256,7 +257,7 @@ public partial class MainForm : Form
     {
         if (isExit || ModifierKeys == Keys.Control)
         {
-            //ÍË³ö
+            //é€€å‡º
             Config.Width = Width;
             Config.Height = Height;
             SaveConfig();
@@ -264,7 +265,7 @@ public partial class MainForm : Form
         }
         else
         {
-            //Òş²Ø
+            //éšè—
             Hide();
             e.Cancel = true;
         }
@@ -303,7 +304,7 @@ public partial class MainForm : Form
             }
             catch (Exception)
             {
-                MessageBox.Show("ÉèÖÃÊ§°Ü");
+                MessageBox.Show("è®¾ç½®å¤±è´¥");
                 return;
             }
         }

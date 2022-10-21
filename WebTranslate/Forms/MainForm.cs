@@ -166,7 +166,7 @@ public partial class MainForm : Form
     }
     private void MainForm_SizeChanged(object? sender, EventArgs e)
     {
-        if (WindowState == FormWindowState.Normal)
+        if (WindowState == FormWindowState.Normal && SettingForm != null)
         {
             Config.Width = this.Width;
             Config.Height = this.Height;

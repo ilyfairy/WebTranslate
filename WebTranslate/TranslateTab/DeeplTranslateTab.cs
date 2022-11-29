@@ -47,7 +47,7 @@ input.dispatchEvent(inputEvent)
     public override async Task<string> GetInputText()
     {
         string r = await WebView.ExecuteScriptAsync("document.querySelector('.lmt__textarea').value");
-        if (string.IsNullOrWhiteSpace(r) || r.Length <= 2) return "";
+        if (r is "null" && string.IsNullOrWhiteSpace(r) || r.Length <= 2) return "";
         return r[1..^1];
     }
 }
